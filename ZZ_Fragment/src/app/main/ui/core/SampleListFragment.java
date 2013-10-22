@@ -38,8 +38,8 @@ public class SampleListFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View mView = inflater.inflate(R.layout.main_center, null);
-		iv_left = (ImageView) mView.findViewById(R.id.main_iv_left);
-		iv_right = (ImageView) mView.findViewById(R.id.main_iv_right);
+		iv_left = (ImageView) mView.findViewById(R.id.main_center_left_image);
+		iv_right = (ImageView) mView.findViewById(R.id.main_center_right_image);
 		return mView;
 	}
 
@@ -50,8 +50,8 @@ public class SampleListFragment extends ListFragment {
 		getList();
 		String[] from = new String[] { "list_title", "list_image",
 				"list_contect" };
-		int[] to = new int[] { R.id.list_title, R.id.list_image,
-				R.id.list_contect };
+		int[] to = new int[] { R.id.main_center_list_title,
+				R.id.main_center_list_icon, R.id.main_center_list_contect };
 		adapter = new SimpleAdapter(parent, data,
 				R.layout.main_center_list_item, from, to);
 

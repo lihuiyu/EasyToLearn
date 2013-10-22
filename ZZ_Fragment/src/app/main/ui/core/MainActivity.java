@@ -19,7 +19,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.main_core);
-		mSlidingMenu = (SlidingMenu) findViewById(R.id.slidingMenu);
+		mSlidingMenu = (SlidingMenu) findViewById(R.id.main_sliding_menu);
 		mSlidingMenu.setLeftView(getLayoutInflater().inflate(
 				R.layout.main_left_frame, null));
 		mSlidingMenu.setRightView(getLayoutInflater().inflate(
@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity {
 		t.replace(R.id.right_frame, rightFragment);
 
 		centerFragment = new SampleListFragment(this);
-		t.replace(R.id.center_frame, centerFragment);
+		t.replace(R.id.main_center_frame, centerFragment);
 		t.commit();
 	}
 

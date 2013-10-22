@@ -12,7 +12,7 @@
         android:padding="7dip" >
 
         <ImageView
-            android:id="@+id/main_iv_left"
+            android:id="@+id/main_center_left_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
@@ -30,7 +30,7 @@
             android:textSize="17dp" />
 
         <ImageView
-            android:id="@+id/main_iv_right"
+            android:id="@+id/main_center_right_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
