@@ -1,7 +1,5 @@
 package app.main.ui.core;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -20,7 +18,6 @@ public class MainActivity extends FragmentActivity {
 
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main_core);
 		mSlidingMenu = (SlidingMenu) findViewById(R.id.slidingMenu);
 		mSlidingMenu.setLeftView(getLayoutInflater().inflate(
@@ -48,10 +45,6 @@ public class MainActivity extends FragmentActivity {
 
 	private void initFileModel() {
 		fileModule = new FileUtility();
-		ArrayList<String> files = fileModule.getSubFolder();
-		for (int i = 0; i < files.size(); i++) {
-			System.out.println(files.get(i));
-		}
 	}
 
 	public void showLeft() {
@@ -66,7 +59,11 @@ public class MainActivity extends FragmentActivity {
 		return this.fileModule;
 	}
 
-	public void setCenterListRootDir(String dir){
+	public void setCenterListRootDir(String dir) {
 		centerFragment.setRootDirAndNofiy(dir);
+	}
+
+	public void setRightListRootDir(String root, String sub) {
+		rightFragment.setRootAndSub(root, sub);
 	}
 }

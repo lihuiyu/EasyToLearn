@@ -99,6 +99,11 @@ public class FileUtility {
 	public File createRootSubFolder(String subName) {
 		this.reset();
 		File file = createDirectory(subName);
+		return file;
+	}
+
+	public File createPreSubFolder(String subName) {
+		File file = createDirectory(subName);
 		createDirectory(FUCTION_NOTE_DIR);
 		Rollback();
 		createDirectory(FUCTION_WRONG_DIR);
