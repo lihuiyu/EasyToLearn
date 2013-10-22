@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +18,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import app.main.R;
+import app.main.ui.memo.NewActivity;
+import app.main.util.FileUtility;
 
 public class RightFragment extends Fragment {
 	private MainActivity parent;
@@ -42,7 +50,17 @@ public class RightFragment extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				System.out.println(subs[arg2]);
+				switch (arg2) {
+				case 0:
+					openLearn(subs[arg2]);
+					break;
+				case 1:
+					openWrong();
+					break;
+				case 2:
+					openClass();
+					break;
+				}
 			}
 		});
 		return view;
@@ -73,4 +91,47 @@ public class RightFragment extends Fragment {
 		System.out.println(root + "   " + sub);
 	}
 
+	private void openLearn(String detail) {
+		if (root.equals("")) {
+			Toast.makeText(parent, "您还没有选择学科", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if (sub.equals("")) {
+			Toast.makeText(parent, "您还没有选择知识条目", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		FileUtility fileModule = parent.useFileModule();
+		fileModule.reset();
+		fileModule.createDirectory(root);
+		fileModule.createDirectory(sub);
+		fileModule.createDirectory(detail);
+		ArrayList<String> dirs = fileModule.getSubFolder();
+		if (dirs.size() == 0) {
+			AlertDialog.Builder builder = new Builder(parent);
+			builder.setMessage("亲，来创建您的心得吧");
+			builder.setTitle("提示");
+			builder.setPositiveButton("确认", new OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(getActivity(), NewActivity.class);
+					parent.startActivity(intent);
+					dialog.dismiss();
+				}
+			});
+			builder.setNegativeButton("取消", new OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.create().show();
+		}
+
+	}
+
+	private void openWrong() {
+
+	}
+
+	private void openClass() {
+
+	}
 }
