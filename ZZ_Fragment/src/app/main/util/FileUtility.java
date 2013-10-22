@@ -24,30 +24,37 @@ import android.util.Log;
  * 
  */
 public class FileUtility {
+	private final static String FUCTION_NOTE_DIR = "学习心得";
+	private final static String FUCTION_WRONG_DIR = "错题整理";
+	private final static String FUCTION_CLASS_DIR = "课堂笔记";
 
+	private String rootPath;
 	/**
 	 * SDCard存储根目录。
 	 */
-	private String SDPATH;
+	private String SDPath;
 	/**
-	 * 项目存储目录
+	 * 当前目录
 	 */
-	private String SAVE_PATH;
+	private String previousPath;
 
 	/**
 	 * 创建项目存储目录
 	 * 
-	 * @param root
-	 *            项目存储根目录名
 	 */
-	public FileUtility(String root) {
-		SDPATH = Environment.getExternalStorageDirectory() + File.separator;
-		SAVE_PATH = SDPATH + root + File.separator;
+	public FileUtility() {
+		SDPath = Environment.getExternalStorageDirectory() + File.separator;
+		rootPath = SDPath + "MySyllabus" + File.separator;
+		previousPath = rootPath;
 		/**
 		 * 新建项目存储根目录
 		 */
-		File file = new File(SAVE_PATH);
+		File file = new File(previousPath);
 		file.mkdir();
+	}
+
+	public void reset() {
+		previousPath = rootPath;
 	}
 
 	/**
@@ -56,7 +63,7 @@ public class FileUtility {
 	 * @return 项目存储根目录
 	 */
 	public String getPath() {
-		return this.SAVE_PATH;
+		return this.previousPath;
 	}
 
 	/**
@@ -70,7 +77,7 @@ public class FileUtility {
 	 */
 	@SuppressWarnings("unused")
 	private boolean isFileExist(String dir, String name) {
-		File file = new File(SAVE_PATH + dir + File.separator + name);
+		File file = new File(previousPath + dir + File.separator + name);
 		return file.exists();
 	}
 
@@ -82,9 +89,22 @@ public class FileUtility {
 	 * @return 创建目录文件
 	 */
 	public File createDirectory(String dirname) {
-		File dir = new File(SAVE_PATH + dirname);
+		previousPath = previousPath + dirname;
+		File dir = new File(previousPath);
 		dir.mkdir();
+		previousPath = previousPath + File.separator;
 		return dir;
+	}
+
+	public File createRootSubFolder(String subName) {
+		this.reset();
+		File file = createDirectory(subName);
+		createDirectory(FUCTION_NOTE_DIR);
+		Rollback();
+		createDirectory(FUCTION_WRONG_DIR);
+		Rollback();
+		createDirectory(FUCTION_CLASS_DIR);
+		return file;
 	}
 
 	/**
@@ -97,7 +117,7 @@ public class FileUtility {
 	 * @return 创建文件
 	 */
 	public File createFileFromName(String dir, String name) {
-		File file = new File(SAVE_PATH + dir + File.separator + name);
+		File file = new File(previousPath + dir + File.separator + name);
 		try {
 			if (!file.exists()) {
 				file.createNewFile();
@@ -112,18 +132,58 @@ public class FileUtility {
 	}
 
 	/**
+	 * 回滚当前路径的上一层
+	 */
+	public void Rollback() {
+		String dirs[] = previousPath.split(File.separator);
+		int len = dirs.length;
+		String dir = dirs[0];
+		for (int i = 1; i < len - 1; i++) {
+			dir = dir + File.separator + dirs[i] + File.separator;
+		}
+		previousPath = dir;
+	}
+
+	/**
+	 * 删除根目录的一个子层文件夹
+	 * 
+	 * @param folderName
+	 */
+	public void deleteRootSubFolder(String folderName) {
+		String deleteFolder = rootPath + folderName;
+		deleteFile(deleteFolder);
+		previousPath = rootPath;
+		ArrayList<String> folder = getSubFolder();
+		if (folder.size() > 0)
+			previousPath = rootPath + folder.get(0);
+	}
+
+	/**
 	 * 根据指定的路径删除文件。
 	 * 
 	 * @param path
 	 *            文件路径
 	 */
-	public static void deleteFile(String path) {
+	public void deleteFile(String path) {
 		File file = new File(path);
 		if (!file.exists()) {
 			return;
 		} else {
 			file.delete();
 		}
+	}
+
+	public ArrayList<String> getSubFolder() {
+		ArrayList<String> ml = new ArrayList<String>();
+		ml.clear();
+		File file = new File(previousPath);
+		File files[] = file.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File f = files[i];
+			String[] dirs = f.getPath().split(File.separator);
+			ml.add(dirs[dirs.length - 1]);
+		}
+		return ml;
 	}
 
 	/**
@@ -302,18 +362,6 @@ public class FileUtility {
 		} else {
 			return true;
 		}
-	}
-
-	public ArrayList<String> getSubfolder() {
-		ArrayList<String> ml = new ArrayList<String>();
-		ml.clear();
-		File file = new File(SAVE_PATH);
-		File files[] = file.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File f = files[i];
-			ml.add(f.getPath());
-		}
-		return ml;
 	}
 
 	public ArrayList<String> getImageList(String dir) {

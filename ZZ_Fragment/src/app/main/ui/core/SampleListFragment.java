@@ -16,10 +16,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import app.main.R;
+import app.main.util.FileUtility;
 
 public class SampleListFragment extends ListFragment {
-	ImageView iv_left;
-	ImageView iv_right;
+	private MainActivity parent;
+	private ImageView iv_left;
+	private ImageView iv_right;
+	private SimpleAdapter adapter;
+	private String rootDir = "";
+	private ArrayList<Map<String, Object>> data;
+
+	public SampleListFragment(MainActivity parent) {
+		this.parent = parent;
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -32,13 +41,13 @@ public class SampleListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		List<Map<String, Object>> data = getList();
-
+		data = new ArrayList<Map<String, Object>>();
+		getList(rootDir);
 		String[] from = new String[] { "list_title", "list_image",
 				"list_contect" };
 		int[] to = new int[] { R.id.list_title, R.id.list_image,
 				R.id.list_contect };
-		SimpleAdapter adapter = new SimpleAdapter(getActivity(), data,
+		adapter = new SimpleAdapter(parent, data,
 				R.layout.main_center_list_item, from, to);
 		setListAdapter(adapter);
 
@@ -52,7 +61,7 @@ public class SampleListFragment extends ListFragment {
 		iv_right.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				((MainActivity) getActivity()).showRight();
+				
 			}
 		});
 	}
@@ -66,44 +75,28 @@ public class SampleListFragment extends ListFragment {
 		((MainActivity) getActivity()).showRight();
 	}
 
-	public List<Map<String, Object>> getList() {
-		Map<String, Object> item1 = new HashMap<String, Object>();
-		item1.put("list_title", getString(R.string.title1));
-		item1.put("list_image", R.drawable.booklist_menu_about);
-		item1.put("list_contect", getString(R.string.test));
-		Map<String, Object> item2 = new HashMap<String, Object>();
-		item2.put("list_title", getString(R.string.title1));
-		item2.put("list_image", R.drawable.booklist_menu_about);
-		item2.put("list_contect", getString(R.string.test));
-		Map<String, Object> item3 = new HashMap<String, Object>();
-		item3.put("list_title", getString(R.string.title1));
-		item3.put("list_image", R.drawable.booklist_menu_about);
-		item3.put("list_contect", getString(R.string.test));
-		Map<String, Object> item4 = new HashMap<String, Object>();
-		item4.put("list_title", getString(R.string.title1));
-		item4.put("list_image", R.drawable.booklist_menu_about);
-		item4.put("list_contect", getString(R.string.test));
-		Map<String, Object> item5 = new HashMap<String, Object>();
-		item5.put("list_title", getString(R.string.title1));
-		item5.put("list_image", R.drawable.booklist_menu_about);
-		item5.put("list_contect", getString(R.string.test));
-		Map<String, Object> item6 = new HashMap<String, Object>();
-		item6.put("list_title", getString(R.string.title1));
-		item6.put("list_image", R.drawable.booklist_menu_about);
-		item6.put("list_contect", getString(R.string.test));
-		Map<String, Object> item7 = new HashMap<String, Object>();
-		item7.put("list_title", getString(R.string.title1));
-		item7.put("list_image", R.drawable.p7);
-		item7.put("list_contect", getString(R.string.test));
-		List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-		data.add(item1);
-		data.add(item2);
-		data.add(item3);
-		data.add(item4);
-		data.add(item5);
-		data.add(item6);
-		data.add(item7);
+	public void getList(String subName) {
+		if (subName.equals("")) {
+			data.clear();
+			return;
+		}
+		FileUtility fileModule = parent.useFileModule();
+		fileModule.reset();
+		fileModule.createDirectory(subName);
+		ArrayList<String> dirs = fileModule.getSubFolder();
+		data.clear();
+		for (int i = 0; i < dirs.size(); i++) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("list_title", dirs.get(i));
+			item.put("list_image", R.drawable.booklist_menu_about);
+			item.put("list_contect", getString(R.string.test));
+			data.add(item);
+		}
+	}
 
-		return data;
+	public void setRootDirAndNofiy(String dir) {
+		this.rootDir = dir;
+		this.getList(rootDir);
+		this.adapter.notifyDataSetChanged();
 	}
 }

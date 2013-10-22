@@ -10,7 +10,7 @@ import app.main.url.SlidingMenu;
 import app.main.util.FileUtility;
 
 public class MainActivity extends FragmentActivity {
-	private static final String ROOT_DIRNAME = "MySyllabus";
+
 	private SlidingMenu mSlidingMenu;
 	private LeftFragment leftFragment;
 	private RightFragment rightFragment;
@@ -29,8 +29,9 @@ public class MainActivity extends FragmentActivity {
 				R.layout.main_right_frame, null));
 		mSlidingMenu.setCenterView(getLayoutInflater().inflate(
 				R.layout.main_center_frame, null));
-		initWidgets();
 		initFileModel();
+		initWidgets();
+
 	}
 
 	private void initWidgets() {
@@ -40,16 +41,16 @@ public class MainActivity extends FragmentActivity {
 		t.replace(R.id.left_frame, leftFragment);
 		t.replace(R.id.right_frame, rightFragment);
 
-		centerFragment = new SampleListFragment();
+		centerFragment = new SampleListFragment(this);
 		t.replace(R.id.center_frame, centerFragment);
 		t.commit();
 	}
 
 	private void initFileModel() {
-		fileModule = new FileUtility(ROOT_DIRNAME);
-		ArrayList<String> files = fileModule.getSubfolder();
+		fileModule = new FileUtility();
+		ArrayList<String> files = fileModule.getSubFolder();
 		for (int i = 0; i < files.size(); i++) {
-System.out.println(files.get(i));
+			System.out.println(files.get(i));
 		}
 	}
 
@@ -61,4 +62,11 @@ System.out.println(files.get(i));
 		mSlidingMenu.showRightView();
 	}
 
+	public FileUtility useFileModule() {
+		return this.fileModule;
+	}
+
+	public void setCenterListRootDir(String dir){
+		centerFragment.setRootDirAndNofiy(dir);
+	}
 }
