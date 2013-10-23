@@ -21,6 +21,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import app.main.R;
 import app.main.ui.memo.NewActivity;
+import app.main.ui.memo.SeeActivity;
 import app.main.util.FileUtility;
 
 public class RightFragment extends Fragment {
@@ -88,10 +89,9 @@ public class RightFragment extends Fragment {
 	public void setRootAndSub(String root, String sub) {
 		this.root = root;
 		this.sub = sub;
-		System.out.println(root + "   " + sub);
 	}
 
-	private void openLearn(String detail) {
+	private void openLearn(final String detail) {
 		if (root.equals("")) {
 			Toast.makeText(parent, "您还没有选择学科", Toast.LENGTH_SHORT).show();
 			return;
@@ -100,7 +100,7 @@ public class RightFragment extends Fragment {
 			Toast.makeText(parent, "您还没有选择知识条目", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		FileUtility fileModule = parent.useFileModule();
+		FileUtility fileModule = MainActivity.fileModule;
 		fileModule.reset();
 		fileModule.createDirectory(root);
 		fileModule.createDirectory(sub);
@@ -113,6 +113,11 @@ public class RightFragment extends Fragment {
 			builder.setPositiveButton("确认", new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					Intent intent = new Intent(getActivity(), NewActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putString("root", root);
+					bundle.putString("sub", sub);
+					bundle.putString("detail", detail);
+					intent.putExtras(bundle);
 					parent.startActivity(intent);
 					dialog.dismiss();
 				}
@@ -123,6 +128,20 @@ public class RightFragment extends Fragment {
 				}
 			});
 			builder.create().show();
+		} else {
+			fileModule.reset();
+			fileModule.createDirectory(root);
+			fileModule.createDirectory(sub);
+			fileModule.createDirectory(detail);
+			String name = fileModule.getSubFolder().get(0);
+			String data = fileModule.readText(name);
+
+			Intent intent = new Intent(getActivity(), SeeActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putString("name", name);
+			bundle.putString("data", data);
+			intent.putExtras(bundle);
+			parent.startActivity(intent);
 		}
 
 	}

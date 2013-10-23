@@ -134,7 +134,7 @@ public class SampleListFragment extends ListFragment {
 			data.clear();
 			return;
 		}
-		FileUtility fileModule = parent.useFileModule();
+		FileUtility fileModule = MainActivity.fileModule;
 		fileModule.reset();
 		fileModule.createDirectory(rootDir);
 		ArrayList<String> dirs = fileModule.getSubFolder();
@@ -155,7 +155,7 @@ public class SampleListFragment extends ListFragment {
 	}
 
 	public void addItem(String title) {
-		FileUtility fileModule = parent.useFileModule();
+		FileUtility fileModule = MainActivity.fileModule;
 		fileModule.reset();
 		fileModule.createDirectory(rootDir);
 		fileModule.createPreSubFolder(title);

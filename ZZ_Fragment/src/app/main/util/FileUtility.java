@@ -1,10 +1,14 @@
 package app.main.util;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -115,14 +119,12 @@ public class FileUtility {
 	/**
 	 * 给定目录和文件名，创建文件
 	 * 
-	 * @param dir
-	 *            目录名
 	 * @param name
 	 *            文件名
 	 * @return 创建文件
 	 */
-	public File createFileFromName(String dir, String name) {
-		File file = new File(previousPath + dir + File.separator + name);
+	public File createFileFromName(String name) {
+		File file = new File(previousPath + name);
 		try {
 			if (!file.exists()) {
 				file.createNewFile();
@@ -218,21 +220,20 @@ public class FileUtility {
 	/**
 	 * 根据提供的文件读入流，将内容写入新文件
 	 * 
-	 * @param dir
-	 *            新文件的文件目录
+	 * 
 	 * @param name
 	 *            新文件的文件名
 	 * @param is
 	 *            旧文件的度入流
 	 * @return 新文件
 	 */
-	public File writeFileToSdCard(String dir, String name, InputStream is) {
+	public File writeFileToSdCard(String name, InputStream is) {
 		File file = null;
 		OutputStream os = null;
 
 		try {
 			// this.createDirectory(dir); // 创建新文件所在目录。
-			file = this.createFileFromName(dir, name); // 创建新文件
+			file = this.createFileFromName(name); // 创建新文件
 			os = new FileOutputStream(file);
 
 			/**
@@ -274,12 +275,11 @@ public class FileUtility {
 	 * 
 	 * @param bitmap
 	 *            照片在内存中的保存对象
-	 * @param photoDirectory
-	 *            项目照片存储目录
+	 * 
 	 * @return -true照片存储成功 -false照片存储失败
 	 */
 	@SuppressWarnings("static-access")
-	public boolean savePhoto(Bitmap bitmap, String photoDirectory) {
+	public boolean savePhoto(Bitmap bitmap) {
 		/**
 		 * 根据当前系统时间生成照片名称
 		 */
@@ -287,7 +287,7 @@ public class FileUtility {
 				Calendar.getInstance(Locale.CHINA)) + ".jpg";
 
 		// createDirectory(photoDirectory);// 创建存储目录
-		File file = createFileFromName(photoDirectory, picture_name);// 创建照片文件
+		File file = createFileFromName(picture_name);// 创建照片文件
 
 		System.out.println(file.getAbsolutePath());
 
@@ -325,7 +325,7 @@ public class FileUtility {
 	 *            新录音音频存录音存储失败
 	 */
 	@SuppressWarnings("static-access")
-	public boolean saveAudio(String origionPath, String audioDirName) {
+	public boolean saveAudio(String origionPath) {
 		/**
 		 * 根据当前系统时间生成录音名称
 		 */
@@ -335,7 +335,6 @@ public class FileUtility {
 
 		System.out.println(audio_name);
 		Log.d("test", audio_name);
-		createDirectory(audioDirName);// 创建存储目录
 		InputStream is = readFileSDCard(new File(origionPath));// 创建原录音读入流
 
 		/**
@@ -343,7 +342,7 @@ public class FileUtility {
 		 */
 		if (is != null) {
 
-			File file = writeFileToSdCard(audioDirName, audio_name, is);
+			File file = writeFileToSdCard(audio_name, is);
 			if (file != null) {
 				System.out.println(file.getAbsolutePath());
 				Log.d("test", file.getAbsolutePath());
@@ -353,6 +352,71 @@ public class FileUtility {
 		} else
 			return false;
 
+	}
+
+	public boolean saveText(String data, String title) {
+		String name = title + ".txt";
+		File file = createFileFromName(name);
+		BufferedWriter outStream = null;
+		try {
+			outStream = new BufferedWriter(new FileWriter(file));
+			outStream.write(data);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				if (outStream != null) {
+					outStream.flush();
+					outStream.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+	public String readText(String fileName) {
+		File file = new File(previousPath + fileName);
+		BufferedReader reader = null;
+		String data = null;
+		try {
+			reader = new BufferedReader(new FileReader(file));
+			String temp;
+			data = reader.readLine();
+			while ((temp = reader.readLine()) != null) {
+				data = data + "\n" + temp;
+			}
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return data;
 	}
 
 	/**

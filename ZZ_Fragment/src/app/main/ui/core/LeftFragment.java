@@ -125,7 +125,7 @@ public class LeftFragment extends Fragment {
 	}
 
 	private void getData() {
-		FileUtility fileModule = parent.useFileModule();
+		FileUtility fileModule = MainActivity.fileModule;
 		fileModule.reset();
 		ArrayList<String> dirs = fileModule.getSubFolder();
 		for (int i = 0; i < dirs.size(); i++) {
@@ -143,7 +143,7 @@ public class LeftFragment extends Fragment {
 		map.put("menuIcon", R.drawable.main_left_item_icon);
 		map.put("menuText", title);
 		listItems.add(map);
-		parent.useFileModule().createRootSubFolder(title);
+		MainActivity.fileModule.createRootSubFolder(title);
 		LeftListAdapter.notifyDataSetChanged();
 
 	}
@@ -153,7 +153,7 @@ public class LeftFragment extends Fragment {
 		if (size > 0 && postion < size) {
 			String name = (String) listItems.remove(postion).get("menuText");
 			LeftListAdapter.notifyDataSetChanged();
-			parent.useFileModule().deleteRootSubFolder(name);
+			MainActivity.fileModule.deleteRootSubFolder(name);
 		}
 	}
 

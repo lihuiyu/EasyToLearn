@@ -14,7 +14,7 @@ public class MainActivity extends FragmentActivity {
 	private RightFragment rightFragment;
 	private SampleListFragment centerFragment;
 	private FragmentTransaction t;
-	private FileUtility fileModule;
+	public static FileUtility fileModule;
 
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -53,10 +53,6 @@ public class MainActivity extends FragmentActivity {
 
 	public void showRight() {
 		mSlidingMenu.showRightView();
-	}
-
-	public FileUtility useFileModule() {
-		return this.fileModule;
 	}
 
 	public void setCenterListRootDir(String dir) {
